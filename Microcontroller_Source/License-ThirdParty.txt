@@ -1,0 +1,1 @@
+This source code uses third party code in the form of third-party libraries, as well as PlatformIO itself. Please check those third-party codebases for the licenses those are offered under.

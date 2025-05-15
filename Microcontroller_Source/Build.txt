@@ -1,0 +1,1 @@
+PLatformIO is used to build and flash the firmware onto the microcontroller. Please see [the installation instructions](https://platformio.org/platformio-ide) for getting it working in your IDE.
