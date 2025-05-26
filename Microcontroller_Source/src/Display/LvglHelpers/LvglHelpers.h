@@ -13,6 +13,9 @@
 
 #include "lvgl.h"
 
+/**
+ * @brief  Contains helper functions for setting up a display panel.
+*/
 class LvglHelpers
 {
 public:

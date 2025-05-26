@@ -40,12 +40,10 @@ std::array<uint8_t, BUFFER_SIZE> SerialHandler::outputBuffer = {};
 
 
 /**
- * @brief  Initialises the SerialHandler class.
+ * @brief                  Initialises the SerialHandler class.
  *
- * @param  IsUsbConnected:  description
- *
- * @return description
- */
+ * @param  IsUsbConnected  True if a USB cable is connected. False otherwise.
+*/
 void SerialHandler::Init(const bool IsUsbConnected)
 {
 	enableDebugTriggers();
@@ -53,6 +51,11 @@ void SerialHandler::Init(const bool IsUsbConnected)
 	SetState(IsUsbConnected);
 }
 
+/**
+ * @brief          Sets whether or not serial communication is possible.
+ *
+ * @param  Enable  True if a USB cable is connected. False otherwise.
+*/
 void SerialHandler::SetState(const bool Enable)
 {
 	switch (Enable)
@@ -78,15 +81,10 @@ void SerialHandler::SetState(const bool Enable)
 }
 
 /**
- * @brief  Brief description of this function
+ * @brief   Reads all the bytes from the serial port in raw bytes.
  *
- * Long description
- *
- * @param  value1:  description
- * @param  value2:  description
- *
- * @return description
- */
+ * @return  A Vector containing the read data.
+*/
 std::vector<uint8_t> SerialHandler::ReadAllData()
 {
 	std::vector<uint8_t> result = {};
@@ -103,6 +101,11 @@ std::vector<uint8_t> SerialHandler::ReadAllData()
 	return result;
 }
 
+/**
+ * @brief   Reads all the bytes from the serial port as a string.
+ *
+ * @return  A string representing all the read data.
+*/
 std::string SerialHandler::ReadAllDataAsString()
 {
 	const int32_t dataLength = Serial.available();
@@ -120,6 +123,12 @@ std::string SerialHandler::ReadAllDataAsString()
 	return result;
 }
 
+/**
+ * @brief               Write a line of text to the buffer.
+ *
+ * @param  TextOut      The text to add.
+ * @param  ShouldWrite  True if the data should actually be added. False otherwise.
+*/
 void SerialHandler::SafeWriteLn(const std::string& TextOut, const bool ShouldWrite)
 {
 	if (!ShouldWrite || BufferOverflowHappened)
@@ -163,6 +172,9 @@ void SerialHandler::SafeWriteLn(const std::string& TextOut, const bool ShouldWri
 	std::ignore = writeBufferToSerial();
 }
 
+/**
+ * @brief  Attempts to write the contents of the buffer to the serial port.
+*/
 void SerialHandler::TryWriteBufferToSerial()
 {
 	if (!receiverConnectionDelayHasElapsed)
@@ -186,6 +198,11 @@ void SerialHandler::TryWriteBufferToSerial()
 	}
 }
 
+/**
+ * @brief   Write data from the buffer into the serial port until it is full.
+ *
+ * @return  True if data was sent to the serial port. False otherwise.
+*/
 bool SerialHandler::writeBufferToSerial()
 {
 	if (unsentDataInBufferFirstByte == unsentDataInBufferLastByte)
@@ -236,6 +253,11 @@ bool SerialHandler::writeBufferToSerial()
 	return true;
 }
 
+/**
+ * @brief   Get the amount of time elapsed since the microcontroller booted up.
+ *
+ * @return  A formatted string containing the time period.
+*/
 std::string SerialHandler::getTimeSinceMicrocontrollerStartup()
 {
 	char currentTimeMsg[17];
@@ -258,6 +280,11 @@ std::string SerialHandler::getTimeSinceMicrocontrollerStartup()
 	return currentTimeMsg;
 }
 
+/**
+ * @brief  Used to instruct given functions to use their debug code.
+ *
+ * @note   Uncomment the booleans that represent the functions you want to debug.
+*/
 void SerialHandler::enableDebugTriggers()
 {
 }

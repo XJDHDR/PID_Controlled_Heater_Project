@@ -47,6 +47,11 @@ Temperature::TempReadingStage Temperature::currentStage = Temperature::TempReadi
 std::array<float, 3> Temperature::mostRecentTemperatureReadings = {};
 
 
+/**
+ * @brief                              Initialises the Temperature class.
+ *
+ * @param  WaitTimeAfterReadingDoneMs  The time to wait after a temperature reading is completed, in ms.
+*/
 void Temperature::Init(uint32_t WaitTimeAfterReadingDoneMs)
 {
 	pinMode(THERMO_RESISTOR_VSS_GPIO, OUTPUT);
@@ -58,6 +63,11 @@ void Temperature::Init(uint32_t WaitTimeAfterReadingDoneMs)
 	waitTimeAfterReadingDoneMs = WaitTimeAfterReadingDoneMs - CAPACITOR_CHARGING_TIME_MS - (WAIT_TIME_BETWEEN_SAMPLES_US * NUM_TEMP_SAMPLES_PER_READING / 1000) + 1;
 }
 
+/**
+ * @brief    Attempt to perform a temperature reading.
+ *
+ * @returns  Data concerning the results of the reading attempt.
+*/
 TempReadData Temperature::Read()
 {
 	TempReadData tempReadData {};
@@ -123,16 +133,27 @@ TempReadData Temperature::Read()
 	}
 }
 
+/**
+ * @brief                   Indicates to the class if the fan is switched on or off.
+ *
+ * @param  IsFanSwitchedOn  True if the fan is switched on, false otherwise.
+*/
 void Temperature::SetFanPowerState(bool IsFanSwitchedOn)
 {
 	isFanSwitchedOn = IsFanSwitchedOn;
 }
 
+/**
+ * @brief  Set whether or not the PID Controller is ready for a new temperature reading.
+*/
 void Temperature::SetPidReadyForNextTempReading()
 {
 	isPidControllerReadyForTempMeasurement = true;
 }
 
+/**
+ * @brief  Start applying power to the thermistor and start a timer while the filter capacitor charges up.
+*/
 void Temperature::startChargingFilterCapacitor()
 {
 	digitalWrite(THERMO_RESISTOR_VSS_GPIO, HIGH);
@@ -141,12 +162,20 @@ void Temperature::startChargingFilterCapacitor()
 	currentStage = TempReadingStage::ChargingFilterCapacitor;
 }
 
+/**
+ * @brief  Change to the temperature reading collection state.
+*/
 void Temperature::beginCollectingTempReadings()
 {
 	numVoltageReadingsOutstanding = NUM_TEMP_SAMPLES_PER_READING;
 	currentStage = TempReadingStage::CollectingTempSample;
 }
 
+/**
+ * @brief    Collect a temperature reading.
+ *
+ * @returns  Data concerning the results of the reading attempt.
+*/
 TempReadData Temperature::collectTempReading()
 {
 	TempReadData tempReadData {};
@@ -193,11 +222,23 @@ TempReadData Temperature::collectTempReading()
 	return tempReadData;
 }
 
+/**
+ * @brief    Get a reading from the thermistor.
+ *
+ * @returns  The voltage reading from the microcontroller's ADC.
+*/
 uint32_t Temperature::getThermoresistorVoltageReading()
 {
 	return analogRead(THERMO_RESISTOR_VOLTAGE_READ_GPIO);
 }
 
+/**
+ * @brief                  Checks if the ADC reading indicates a fault in the thermistor.
+ *
+ * @param  VoltageBitmask  The ADC reading.
+ *
+ * @returns                The result of the fault check.
+*/
 TempReadingResult Temperature::checkVoltageReadingForFaults(const uint32_t VoltageBitmask)
 {
 	if (VoltageBitmask <= PROBE_UNPLUGGED_MAX_VALUE)
@@ -213,6 +254,13 @@ TempReadingResult Temperature::checkVoltageReadingForFaults(const uint32_t Volta
 	return TempReadingResult::TempReadSuccessfully;
 }
 
+/**
+ * @brief                  Checks if all required ADC readings have been finished.
+ *
+ * @param  VoltageBitmask  The most recent ADC reading.
+ *
+ * @returns                True if all readings have been taken. False otherwise.
+*/
 bool Temperature::checkIfAllVoltageReadingsDone(const uint32_t VoltageBitmask)
 {
 	thermoresistorReadingsAccumulatedSoFar += VoltageBitmask;
@@ -227,6 +275,11 @@ bool Temperature::checkIfAllVoltageReadingsDone(const uint32_t VoltageBitmask)
 	return false;
 }
 
+/**
+ * @brief    Converts all the measured thermistor readings into an averaged temperature reading.
+ *
+ * @returns  The measured temperature in °C.
+*/
 float Temperature::convertThermoresistorVoltagesToTemperature()
 {
 	digitalWrite(THERMO_RESISTOR_VSS_GPIO, LOW);
@@ -239,6 +292,11 @@ float Temperature::convertThermoresistorVoltagesToTemperature()
 	return temperature;
 }
 
+/**
+ * @brief    Checks if enough milliseconds have elapsed since a defined delay was set.
+ *
+ * @returns  True if enough time has passed. False otherwise.
+*/
 bool Temperature::hasEnoughMillisecondsElapsed()
 {
 	if ((millis() - startingMillisValue) >= targetWaitTimeMs)
@@ -249,6 +307,11 @@ bool Temperature::hasEnoughMillisecondsElapsed()
 	return false;
 }
 
+/**
+ * @brief    Checks if enough microseconds have elapsed since a defined delay was set.
+ *
+ * @returns  True if enough time has passed. False otherwise.
+*/
 bool Temperature::hasEnoughMicrosecondsElapsed()
 {
 	if ((micros() - startingMicrosValue) >= targetWaitTimeUs)
@@ -259,6 +322,9 @@ bool Temperature::hasEnoughMicrosecondsElapsed()
 	return false;
 }
 
+/**
+ * @brief  Initiates a lockout period after a thermistor fault is detected.
+*/
 void Temperature::lockoutAfterThermoresistorFault()
 {
 	digitalWrite(THERMO_RESISTOR_VSS_GPIO, LOW);

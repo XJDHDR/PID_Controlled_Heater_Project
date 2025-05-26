@@ -48,6 +48,12 @@ lv_indev_t* Display::touchscreen;
 lv_style_t Display::buttonLabelTextStyle;   // Do NOT declare this as a pointer. Otherwise, firmware encounters exceptions.
 
 
+/**
+ * @brief                     Initialises LVGL, the display driver and all display related classes.
+ *
+ * @param  TargetTemperature  The Target Temperature to initialise with.
+ * @param  ConfigData         The PID controller configuration data.
+*/
 void Display::Init(float TargetTemperature, PIDControllerInitData ConfigData)
 {
 	enableDebugTriggers();
@@ -81,6 +87,9 @@ void Display::Init(float TargetTemperature, PIDControllerInitData ConfigData)
 	currentScreen = Screens::StatusAkaMain;
 }
 
+/**
+ * @brief  Updates LVGL and backlight. ALso check if a screen switch is required and updates error messages on main screen's message bar.
+*/
 void Display::Update()
 {
 	StatusAkaMain::UpdateErrorMessage();
@@ -90,6 +99,11 @@ void Display::Update()
 	Backlight::CheckForIdleTimeout();
 }
 
+/**
+ * @brief                        Polls all config screens for any changes to float settings.
+ *
+ * @param  ChangedFloatSettings  Vector containing all the changed float settings.
+*/
 void Display::GetAllChangedFloatSettings(std::vector<PIDFloatDataPacket>* ChangedFloatSettings)
 {
 	if (currentScreen != StatusAkaMain)
@@ -102,6 +116,11 @@ void Display::GetAllChangedFloatSettings(std::vector<PIDFloatDataPacket>* Change
 	ConfigPIDControlPart2::GetAllChangedFloatSettings(ChangedFloatSettings);
 }
 
+/**
+ * @brief                      Polls all config screens for any changes to integer settings.
+ *
+ * @param  ChangedIntSettings  Vector containing all the changed integer settings.
+*/
 void Display::GetAllChangedIntSettings(std::vector<PIDIntDataPacket>* ChangedIntSettings)
 {
 	if (currentScreen != StatusAkaMain)
@@ -113,6 +132,9 @@ void Display::GetAllChangedIntSettings(std::vector<PIDIntDataPacket>* ChangedInt
 	ConfigPIDControlPart1::GetAllChangedIntSettings(ChangedIntSettings);
 }
 
+/**
+ * @brief  Check if it's time for LVGL to do an update.
+*/
 void Display::checkForLvglUpdate()
 {
 	if ((millis() - millisValueAtLastLvglUpdate) < timeUntilNextLvglUpdateMs)
@@ -130,6 +152,9 @@ void Display::checkForLvglUpdate()
 	}
 }
 
+/**
+ * @brief  Figure out which screen is the one that needs to be polled for a screen switch.
+*/
 void Display::checkForScreenSwitchRequired()
 {
 	switch (currentScreen)
@@ -157,6 +182,12 @@ void Display::checkForScreenSwitchRequired()
 	}
 }
 
+/**
+ * @brief                                         Polls the identified current screen to check if a screen switch has been requested.
+ *
+ * @param  currentScreenIsSwitchRequiredFunction  The function on the current screen that determines if a screen switch is required, and which screen if so.
+ * @param  currentScreenHideFunction              The function on the current screen that hides the screen.
+*/
 void Display::checkIfSwitchRequiredOnCurrentScreen(Screens (*currentScreenIsSwitchRequiredFunction)(), void (*currentScreenHideFunction)())
 {
 	const Screens desiredScreen = currentScreenIsSwitchRequiredFunction();
@@ -186,6 +217,12 @@ void Display::checkIfSwitchRequiredOnCurrentScreen(Screens (*currentScreenIsSwit
 	currentScreen = desiredScreen;
 }
 
+/**
+ * @brief                                         Polls the identified current screen to check if a screen switch has been requested.
+ *
+ * @param  currentScreenIsSwitchRequiredFunction  The function on the current screen that determines if a screen switch is required, and which screen if so.
+ * @param  currentScreenHideFunction              The function on the current screen that hides the screen.
+*/
 void Display::getTouchData(lv_indev_t* Indev, lv_indev_data_t* Data)
 {
 	if (Indev == nullptr)
@@ -220,6 +257,13 @@ void Display::getTouchData(lv_indev_t* Indev, lv_indev_data_t* Data)
 	Backlight::ResetIdleTimeout();
 }
 
+/**
+ * @brief                                  Used by LVGL to update defined pixels on the LCD.
+ *
+ * @param  TargetDisplay                   The display that is being targeted for an update.
+ * @param  CoordinatesForScreenUpdateArea  Coordinates for the part of the display that needs to be updated.
+ * @param  NewPixelColourBytes             Array containing the bytes for the new pixel colours in the update area.
+*/
 void Display::flushDisplay(lv_display_t* TargetDisplay, const lv_area_t* CoordinatesForScreenUpdateArea, uint8_t* NewPixelColourBytes)
 {
 	int32_t x1 = CoordinatesForScreenUpdateArea->x1;
@@ -240,11 +284,21 @@ void Display::flushDisplay(lv_display_t* TargetDisplay, const lv_area_t* Coordin
 	lv_display_flush_ready(TargetDisplay);
 }
 
+/**
+ * @brief  Used by LVGL to measure the passage of time.
+ *
+ * @return The number of milliseconds that have elapsed since the microcontroller bootup.
+*/
 uint32_t Display::tickCounter()
 {
 	return millis();
 }
 
+/**
+ * @brief  Used to instruct given functions to use their debug code.
+ *
+ * @note   Uncomment the booleans that represent the functions you want to debug.
+*/
 void Display::enableDebugTriggers()
 {
 //	debug_Update = true;

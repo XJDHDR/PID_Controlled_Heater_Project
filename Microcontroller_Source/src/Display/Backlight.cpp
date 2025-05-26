@@ -25,12 +25,18 @@ uint32_t Backlight::millisValueAtStartOfTimeout = 0;
 Backlight::backlightState Backlight::currentState = Off;
 
 
+/**
+ * @brief  Initialises the backlight class.
+*/
 void Backlight::Init()
 {
 	pinMode(TFT_BACKLIGHT_PIN, OUTPUT);
 	SwitchOn();
 }
 
+/**
+ * @brief  Checks if the idle timer has exceeded the timeout length, and turn the backlight off if so.
+*/
 void Backlight::CheckForIdleTimeout()
 {
 	if (wasScreenRecentlyWoken && ((millis() - millisValueAtLastScreenWake) > 500))
@@ -51,6 +57,11 @@ void Backlight::CheckForIdleTimeout()
 	SwitchOff();
 }
 
+/**
+ * @brief   Checks if the backlight is currently timed out.
+ *
+ * @return  True if the backlight is off, or has been recently woken up. False otherwise.
+*/
 bool Backlight::IsTimedOut()
 {
 	if (currentState == Off)
@@ -66,11 +77,17 @@ bool Backlight::IsTimedOut()
 	return false;
 }
 
+/**
+ * @brief  Resets the idle timer.
+*/
 void Backlight::ResetIdleTimeout()
 {
 	millisValueAtStartOfTimeout = millis();
 }
 
+/**
+ * @brief  Switches off the backlight.
+*/
 void Backlight::SwitchOff()
 {
 	if (currentState == Off)
@@ -83,6 +100,9 @@ void Backlight::SwitchOff()
 	wasScreenRecentlyWoken = false;
 }
 
+/**
+ * @brief  Switches on the backlight.
+*/
 void Backlight::SwitchOn()
 {
 	if (currentState == On)

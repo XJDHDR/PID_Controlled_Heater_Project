@@ -11,6 +11,9 @@
 #ifndef ENGINEERING_PROJECT_ALLSCREENS_H
 #define ENGINEERING_PROJECT_ALLSCREENS_H
 
+/**
+ * @brief  Enum that defines all the screens that are in the project.
+*/
 enum Screens
 {
 	Invalid,

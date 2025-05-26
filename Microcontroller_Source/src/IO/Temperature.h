@@ -15,6 +15,9 @@
 #include <cstdint>
 #include <utility>
 
+/**
+ * @brief  All of the possible results of a temperature reading.
+*/
 enum TempReadingResult
 {
 	ProcessingCurrentRequest,
@@ -24,12 +27,18 @@ enum TempReadingResult
 	LockoutActive
 };
 
+/**
+ * @brief  Struct that contains the result of a temperature reading, and the measured temperature if successful in °C.
+*/
 struct TempReadData
 {
 	TempReadingResult Result;
 	float Temp;
 };
 
+/**
+ * @brief  Contains the logic for the Temperature Controller.
+*/
 class Temperature
 {
 public:

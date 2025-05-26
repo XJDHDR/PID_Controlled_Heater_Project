@@ -13,6 +13,9 @@
 
 #include <cstdint>
 
+/**
+ * @brief  Contains the logic for managing the display's backlight.
+*/
 class Backlight
 {
 public:

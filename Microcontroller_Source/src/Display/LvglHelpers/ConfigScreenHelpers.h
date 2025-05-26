@@ -16,6 +16,9 @@
 
 #include "lvgl.h"
 
+/**
+ * @brief  Contains various helper functions for setting up the Config screens.
+*/
 class ConfigScreenHelpers
 {
 private:
@@ -23,6 +26,9 @@ private:
 
 
 public:
+	/**
+	 * @brief  Base struct that provides common variables and functions for the child SpinBox structs.
+	*/
 	struct SpinboxData
 	{
 		bool HasValueBeenChangedSinceLastCheck = false;
@@ -42,6 +48,9 @@ public:
 		{}
 	};
 
+	/**
+	 * @brief  Stores a reference to a SpinBox widget and the current Integer value set in it.
+	*/
 	struct IntSpinboxData final : SpinboxData
 	{
 		int32_t CurrentValue = 0;
@@ -57,6 +66,9 @@ public:
 		}
 	};
 
+	/**
+	 * @brief  Stores a reference to a SpinBox widget and the current Floating point value set in it.
+	*/
 	struct FloatSpinboxData final : SpinboxData
 	{
 		uint32_t DecimalPosition = 0;

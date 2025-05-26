@@ -16,6 +16,9 @@
 
 #include "AllScreens.h"
 
+/**
+ * @brief  Contains the logic for the main screen.
+*/
 class StatusAkaMain
 {
 public:

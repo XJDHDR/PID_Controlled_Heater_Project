@@ -38,6 +38,9 @@ uint32_t HeaterControl::currentDutyCycleOnTimeUs = 0;
 HeaterControl::HeaterStates HeaterControl::heaterState = HeaterStates::SwitchedOff;
 
 
+/**
+ * @brief  Initialises the heater control class.
+*/
 void HeaterControl::Init()
 {
 	enableDebugTriggers();
@@ -48,16 +51,31 @@ void HeaterControl::Init()
 	SerialHandler::SafeWriteLn("Heater control initialised.", debug_Init);
 }
 
+/**
+ * @brief    Get the duty the heater is currently set to.
+ *
+ * @returns  The duty cycle as a percent between 0 and 100.
+*/
 uint32_t HeaterControl::GetCurrentPowerLevel()
 {
 	return currentPowerLevelPercent;
 }
 
+/**
+ * @brief                Sets whether or not the fan is currently spinning.
+ *
+ * @param  IsFanRunning  True if the fan is operating. False otherwise.
+*/
 void HeaterControl::SetFanIsRunning(bool IsFanRunning)
 {
 	isFanRunning = IsFanRunning;
 }
 
+/**
+ * @brief                        Sets a new duty cycle for the heater.
+ *
+ * @param  NewPowerLevelPercent  Duty cycle as a percentage between 0 and 100.
+*/
 void HeaterControl::SetHeaterPowerLevel(const float NewPowerLevelPercent)
 {
 	// Don't allow the heater to switch on if the fan is not running.
@@ -100,6 +118,9 @@ void HeaterControl::SetHeaterPowerLevel(const float NewPowerLevelPercent)
 	}
 }
 
+/**
+ * @brief  Checks whether the heater control GPIO state aligns with the current PWM state, and changes it accordingly if not.
+*/
 void HeaterControl::UpdatePwmState()
 {
 	if ((micros() - microsValueAtStartOfThisCycle) >= ONE_HUNDRED_50HZ_WAVE_PERIODS_IN_US)
@@ -137,18 +158,29 @@ void HeaterControl::UpdatePwmState()
 	}
 }
 
+/**
+ * @brief  Switches off the heater.
+*/
 void HeaterControl::setHeaterSwitchedOffState()
 {
 	heaterState = SwitchedOff;
 	currentPowerLevelPercent = 0;
 }
 
+/**
+ * @brief  Switches the heater to maximum power.
+*/
 void HeaterControl::setHeaterMaxPowerState()
 {
 	currentPowerLevelPercent = 100.0;
 	heaterState = SwitchedOnMaxPower;
 }
 
+/**
+ * @brief         Sets the state of the heater control GPIO.
+ *
+ * @param  State  Whether to set the GPIO to a Low or High state.
+*/
 void HeaterControl::setGpioState(const uint8_t State)
 {
 	if (currentGpioState == State)
@@ -166,6 +198,11 @@ void HeaterControl::setGpioState(const uint8_t State)
 	}
 }
 
+/**
+ * @brief  Used to instruct given functions to use their debug code.
+ *
+ * @note   Uncomment the booleans that represent the functions you want to debug.
+*/
 void HeaterControl::enableDebugTriggers()
 {
 //	debug_Init = true;

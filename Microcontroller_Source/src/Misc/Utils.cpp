@@ -15,6 +15,14 @@
 #include <thread>
 
 
+/**
+ * @brief             Convert a formatted string into a plain string with the arguments inserted.
+ *
+ * @param  FormatStr  The formatted string.
+ * @param  ...        All of the values to insert into the formatted string.
+ *
+ * @return            The string with the data added in.
+*/
 std::string Utils::StringFormat(const std::string FormatStr, ...)
 {
 	int final_n, n = ((int)FormatStr.size()) * 2; /* Reserve two times as much as the length of the FormatStr */
@@ -42,6 +50,14 @@ std::string Utils::StringFormat(const std::string FormatStr, ...)
 	return std::string(formatted.get());
 }
 
+/**
+ * @brief              Calculate a CRC-8 checksum for a byte.
+ *
+ * @param  InitialCrc  The CRC value to start with.
+ * @param  byte        The byte to calculate the CRC for.
+ *
+ * @return             The calculated CRC value.
+*/
 uint8_t Utils::CalcCrc8(const uint8_t InitialCrc, uint8_t byte)	// CCITT-CRC-8 Polygon x8+x4+x3+x2+1
 {
 	uint8_t finalCrc = InitialCrc;
@@ -64,6 +80,11 @@ uint8_t Utils::CalcCrc8(const uint8_t InitialCrc, uint8_t byte)	// CCITT-CRC-8 P
 	return finalCrc;
 }
 
+/**
+ * @brief            Puts the microcontroller into an error state.
+ *
+ * @param  ErrorMsg  The message to print to the serial port.
+*/
 [[noreturn]]
 void Utils::ErrorState(const std::string& ErrorMsg)
 {

@@ -13,9 +13,15 @@
 
 #include <cstdint>
 
+/**
+ * @brief  Contains the logic for the Touchscreen class.
+*/
 class Touch
 {
 public:
+	/**
+	 * @brief  Contains the X and Y coordinates of a touch event, and whether the event was determined to be valid.
+	*/
 	struct TouchPoint
 	{
 		bool WasValid;
@@ -28,6 +34,9 @@ public:
     static TouchPoint GetLastTouchPoint();
 
 private:
+	/**
+	 * @brief  Whether an I2C transaction was successful, and the data read from the touch IC.
+	*/
 	struct I2CData
 	{
 		bool WasSuccessful;

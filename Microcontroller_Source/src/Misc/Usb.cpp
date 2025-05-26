@@ -22,12 +22,20 @@ const uint32_t* Usb::usbFrameNumberAddress = reinterpret_cast<uint32_t*>(USB_SER
 
 Usb::State Usb::previousUsbConnectedState = State::Uninitialised;
 
+/**
+ * @brief  Initialises the USB Manager.
+*/
 void Usb::Init()
 {
 	previousUsbFrameNumber = usbFrameNumberAddress[0];
 	previousMillisValue = millis();
 }
 
+/**
+ * @brief   Checks if there is a USB device plugged into the port.
+ *
+ * @return  The current connection state.
+*/
 Usb::State Usb::IsUsbPluggedIn()
 {
 	const uint32_t currentUsbFrameNumber = usbFrameNumberAddress[0];

@@ -13,6 +13,9 @@
 
 #include <cstdint>
 
+/**
+ * @brief  Enum containing the settings defined in the PID Controller class.
+*/
 enum PIDSettings
 {
 	TemperatureSetPoint,
@@ -27,6 +30,9 @@ enum PIDSettings
 	OutputMaxValue
 };
 
+/**
+ * @brief  Struct containing the data for all the settings defined in the PID Controller class.
+*/
 struct PIDControllerInitData
 {
 	float TemperatureSetPointDegCent;
@@ -41,12 +47,18 @@ struct PIDControllerInitData
 	float OutputMaxValue;
 };
 
+/**
+ * @brief  Data packet for a given PID Controller float setting.
+*/
 struct PIDFloatDataPacket
 {
 	PIDSettings Setting;
 	float Value;
 };
 
+/**
+ * @brief  Data packet for a given PID Controller integer setting.
+*/
 struct PIDIntDataPacket
 {
 	PIDSettings Setting;

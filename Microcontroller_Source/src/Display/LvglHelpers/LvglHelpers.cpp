@@ -12,6 +12,20 @@
 #include "LvglHelpers.h"
 
 
+/**
+ * @brief                       Create a new text label widget using a char array.
+ *
+ * @param  ParentWidget         The widget that the text label will be parented to.
+ * @param  TextBuffer           An array that contains the text the label will display.
+ * @param  IsParentGridAligned  Does the parent widget use grid alignment?
+ * @param  ColumnAlignment      How will the widget be horizontally aligned in its cell?
+ * @param  ColumnPos            The (first?) column in the grid this widget will occupy.
+ * @param  ColumnSpan           How many columns this widget will occupy, starting from ColumnPos.
+ * @param  RowPos               The (first?) row in the grid this widget will occupy.
+ * @param  RowSpan              How many rows this widget will occupy, starting from RowPos.
+ *
+ * @returns                     The text label widget created by this function.
+*/
 lv_obj_t* LvglHelpers::CreateTextLabel(
 		lv_obj_t* ParentWidget, char* TextBuffer, bool IsParentGridAligned, lv_grid_align_t ColumnAlignment,
 		int32_t ColumnPos, int32_t ColumnSpan, int32_t RowPos, int32_t RowSpan
@@ -31,6 +45,20 @@ lv_obj_t* LvglHelpers::CreateTextLabel(
 	return textLabel;
 }
 
+/**
+ * @brief                       Create a new text label widget using a string.
+ *
+ * @param  ParentWidget         The widget that the text label will be parented to.
+ * @param  Text                 A string with the text the label will display.
+ * @param  IsParentGridAligned  Does the parent widget use grid alignment?
+ * @param  ColumnAlignment      How will the widget be horizontally aligned in its cell?
+ * @param  ColumnPos            The (first?) column in the grid this widget will occupy.
+ * @param  ColumnSpan           How many columns this widget will occupy, starting from ColumnPos.
+ * @param  RowPos               The (first?) row in the grid this widget will occupy.
+ * @param  RowSpan              How many rows this widget will occupy, starting from RowPos.
+ *
+ * @returns                     The text label widget created by this function.
+*/
 lv_obj_t* LvglHelpers::CreateTextLabel(
 	lv_obj_t* ParentWidget, const char* Text, bool IsParentGridAligned, lv_grid_align_t ColumnAlignment,
 	int32_t ColumnPos, int32_t ColumnSpan, int32_t RowPos, int32_t RowSpan
@@ -50,6 +78,27 @@ lv_obj_t* LvglHelpers::CreateTextLabel(
 	return textLabel;
 }
 
+/**
+ * @brief                        Create a new button widget that contains a text label.
+ *
+ * @param  ParentWidget          The widget that the text label will be parented to.
+ * @param  ButtonLabelTextStyle  The style that will be applied to the text.
+ * @param  EventHandler          The event handler function that will be executed when specified events occur.
+ * @param  EventFilter           The events that will trigger the function provided to EventHandler.
+ * @param  UserData              The user data that will be passed to the event handler function.
+ * @param  Width                 Button width in pixels.
+ * @param  Height                Button height in pixels.
+ * @param  ColumnPos             The (first?) column in the grid this widget will occupy.
+ * @param  ColumnSpan            How many columns this widget will occupy, starting from ColumnPos.
+ * @param  RowPos                The (first?) row in the grid this widget will occupy.
+ * @param  RowSpan               How many rows this widget will occupy, starting from RowPos.
+ * @param  ColumnAlignment       How will the widget be horizontally aligned in its cell?
+ * @param  LabelText             A string with the text that will be drawn on the button.
+ * @param  IncreaseTextSize      Applies style defined in ButtonLabelTextStyle if true.
+ * @param  IsToggleButton        True creates a toggle button. False creates a regular press button.
+ *
+ * @returns                      The button widget created by this function.
+*/
 lv_obj_t* LvglHelpers::CreateTextLabelButton(
 		lv_obj_t* ParentWidget, lv_style_t* ButtonLabelTextStyle,
 		void EventHandler(lv_event_t*), lv_event_code_t EventFilter, void* UserData,
@@ -83,6 +132,25 @@ lv_obj_t* LvglHelpers::CreateTextLabelButton(
 	return button;
 }
 
+/**
+ * @brief                         Create an LVGL Object that is designed to hold other widgets.
+ *
+ * @param  ParentWidget           The widget that the text label will be parented to.
+ * @param  Opacity                How opaque the widget's background will be.
+ * @param  Padding                The size of the widget's padding in pixels.
+ * @param  SharpCorners           Whether the widget will have sharp or rounded corners.
+ * @param  Width                  Button width in pixels.
+ * @param  Height                 Button height in pixels.
+ * @param  GridColumnDescriptors  An array describing the grid columns in this widget.
+ * @param  GridRowDescriptors     An array describing the grid rows in this widget.
+ * @param  IsParentGridAligned    Does the parent widget use grid alignment?
+ * @param  ColumnPos              The (first?) column in the grid this widget will occupy.
+ * @param  ColumnSpan             How many columns this widget will occupy, starting from ColumnPos.
+ * @param  RowPos                 The (first?) row in the grid this widget will occupy.
+ * @param  RowSpan                How many rows this widget will occupy, starting from RowPos.
+ *
+ * @returns                       The LVGL Object widget created by this function.
+*/
 lv_obj_t* LvglHelpers::CreateWidgetContainer(
 		lv_obj_t* ParentWidget, lv_opa_t Opacity, int32_t Padding, bool SharpCorners, int32_t Width, int32_t Height,
 		const int32_t* GridColumnDescriptors, const int32_t* GridRowDescriptors,

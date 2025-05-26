@@ -11,6 +11,9 @@
 #ifndef ENGINEERING_PROJECT_MAIN_H
 #define ENGINEERING_PROJECT_MAIN_H
 
+/**
+ * @brief  Holds the code that interfaces with the rest of the classes.
+*/
 class Main
 {
 public:

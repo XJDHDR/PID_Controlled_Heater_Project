@@ -67,6 +67,13 @@ lv_obj_t* StatusAkaMain::onOffButton;
 lv_obj_t* StatusAkaMain::errorMessagesLabel;
 
 
+/**
+ * @brief                         Initialises the Main Screen class.
+ *
+ * @param  TargetScreen:          The display that this screen will be parented to.
+ * @param  ButtonLabelTextStyle:  The style that will be applied to the labels of large buttons.
+ * @param  TargetTemperature:     The target temperature set at startup.
+*/
 void StatusAkaMain::Init(lv_obj_t* TargetScreen, lv_style_t* ButtonLabelTextStyle, float TargetTemperature)
 {
 	enableDebugTriggers();
@@ -115,6 +122,9 @@ void StatusAkaMain::Init(lv_obj_t* TargetScreen, lv_style_t* ButtonLabelTextStyl
 	);
 }
 
+/**
+ * @brief  Handles updating the message bar at the bottom of the display.
+*/
 void StatusAkaMain::UpdateErrorMessage()
 {
 	if ((millis() - millisValueAtLastErrorMessageUpdate) < TIME_BETWEEN_ERROR_MESSAGE_UPDATES_MS)
@@ -152,6 +162,11 @@ void StatusAkaMain::UpdateErrorMessage()
 	}
 }
 
+/**
+ * @brief    Used to figure out if the user has requested a switch to a different screen.
+ *
+ * @returns  The screen that needs to be switched to, or Invalid if no switch is required.
+*/
 Screens StatusAkaMain::IsScreenSwitchRequired()
 {
 	if (!screenSwitchRequired)
@@ -162,6 +177,9 @@ Screens StatusAkaMain::IsScreenSwitchRequired()
 	return desiredScreen;
 }
 
+/**
+ * @brief    Hides the screen from view.
+*/
 void StatusAkaMain::Hide()
 {
 	lv_obj_add_flag(rootScreenContainer, LV_OBJ_FLAG_HIDDEN);
@@ -169,6 +187,9 @@ void StatusAkaMain::Hide()
 	desiredScreen = Screens::Invalid;
 }
 
+/**
+ * @brief    Unhides the screen.
+*/
 void StatusAkaMain::Show()
 {
 	lv_obj_remove_flag(rootScreenContainer, LV_OBJ_FLAG_HIDDEN);
@@ -176,6 +197,11 @@ void StatusAkaMain::Show()
 	desiredScreen = Screens::StatusAkaMain;
 }
 
+/**
+ * @brief    Fetches the amount of change the user wants to make to the target temperature.
+ *
+ * @returns  The amount of change the user has requested in °C.
+*/
 float StatusAkaMain::GetTargetTemperatureChangeDesiredByUser()
 {
 	const float desiredTemperatureUnitChangeAmount = targetTemperatureChangeDesiredByUser;
@@ -190,11 +216,21 @@ float StatusAkaMain::GetTargetTemperatureChangeDesiredByUser()
 	return desiredTemperatureUnitChangeAmount;
 }
 
+/**
+ * @brief    Gets the state of the On/Off button.
+ *
+ * @returns  True if the button is in the Off state. False otherwise.
+*/
 bool StatusAkaMain::IsOnOffButtonInOffState()
 {
 	return currentOnOffButtonSwitchedOffState;
 }
 
+/**
+ * @brief              Updates the UI to display the new measured temperature.
+ *
+ * @param Temperature  The new temperature in °C.
+*/
 void StatusAkaMain::SetCurrentTemperature(const float Temperature)
 {
 	const float differenceBetweenNewAndCurrentTemperature = Temperature - currentTemperatureDegCent;
@@ -215,6 +251,11 @@ void StatusAkaMain::SetCurrentTemperature(const float Temperature)
 	}
 }
 
+/**
+ * @brief              Updates the UI to display the new Target Temperature.
+ *
+ * @param Temperature  The new temperature in °C.
+*/
 void StatusAkaMain::SetCurrentTargetTemperature(const float Temperature)
 {
 	std::ignore = snprintf(targetTemperatureText, DATA_STRING_BUFFER_MAX_SIZE, "%0.1f", Temperature);
@@ -227,6 +268,11 @@ void StatusAkaMain::SetCurrentTargetTemperature(const float Temperature)
 	}
 }
 
+/**
+ * @brief             Updates the UI to reflect whether or not the PID Controller is active.
+ *
+ * @param IsActive    True if the PID Controller is active. False otherwise.
+*/
 void StatusAkaMain::SetPiControllerStatusIndicator(bool IsActive)
 {
 	if (currentDisplayedPiControllerActiveIndication == IsActive)
@@ -245,6 +291,12 @@ void StatusAkaMain::SetPiControllerStatusIndicator(bool IsActive)
 	currentDisplayedPiControllerActiveIndication = false;
 }
 
+/**
+ * @brief               Updates the UI to display the current fan RPM.
+ *
+ * @param IsSwitchedOn  True if the fan is switched on. False otherwise.
+ * @param Rpm           The current RPM.
+*/
 void StatusAkaMain::SetCurrentFanRpm(const bool IsSwitchedOn, const uint32_t Rpm)
 {
 	if (IsSwitchedOn)
@@ -259,6 +311,12 @@ void StatusAkaMain::SetCurrentFanRpm(const bool IsSwitchedOn, const uint32_t Rpm
 	lv_label_set_text_static(currentFanRpmValueTextLabel, nullptr);
 }
 
+/**
+ * @brief                  Updates the UI to display the current duty cycle for both the fan and heater.
+ *
+ * @param FanDutyCycle     The fan's duty cycle.
+ * @param HeaterDutyCycle  The heater's duty cycle.
+*/
 void StatusAkaMain::SetCurrentDutyCycles(const float FanDutyCycle, const float HeaterDutyCycle)
 {
 	std::ignore = snprintf(currentFanDutyCycleText, DATA_STRING_BUFFER_MAX_SIZE, "%0.0f", FanDutyCycle);
@@ -267,16 +325,32 @@ void StatusAkaMain::SetCurrentDutyCycles(const float FanDutyCycle, const float H
 	lv_label_set_text_static(currentHeaterOutputValueTextLabel, nullptr);
 }
 
+/**
+ * @brief           Adds a new error condition to the status message panel.
+ *
+ * @param NewError  The new error condition.
+*/
 void StatusAkaMain::AddErrorCondition(StatusAkaMain::ErrorMessages NewError)
 {
 	allErrorConditionsPresent |= NewError;
 }
 
+/**
+ * @brief                Removes an outdated new error condition from the status message panel.
+ *
+ * @param OutdatedError  The outdated error condition.
+*/
 void StatusAkaMain::RemoveErrorCondition(StatusAkaMain::ErrorMessages OutdatedError)
 {
 	allErrorConditionsPresent &= ~OutdatedError;
 }
 
+/**
+ * @brief                        Creates the widgets for the temperature related parts of the UI.
+ *
+ * @param ButtonLabelTextStyle   The style that will be applied to the labels of large buttons.
+ * @param WidgetsContainerWidth  The width of the widgets container.
+*/
 void StatusAkaMain::buildTemperatureUi(lv_style_t* ButtonLabelTextStyle, const int32_t WidgetsContainerWidth)
 {
 	lv_obj_t* temperatureWidgetsContainer = LvglHelpers::CreateWidgetContainer(
@@ -324,6 +398,11 @@ void StatusAkaMain::buildTemperatureUi(lv_style_t* ButtonLabelTextStyle, const i
 	);
 }
 
+/**
+ * @brief                        Creates the widgets for the output related parts of the UI.
+ *
+ * @param WidgetsContainerWidth  The width of the widgets container.
+*/
 void StatusAkaMain::buildOutputUi(int32_t WidgetsContainerWidth)
 {
 	lv_obj_t* outputWidgetsContainer = LvglHelpers::CreateWidgetContainer(
@@ -373,12 +452,22 @@ void StatusAkaMain::buildOutputUi(int32_t WidgetsContainerWidth)
 	);
 }
 
+/**
+ * @brief         Event handler function that is invoked when the "Config" button is pressed.
+ *
+ * @param  Event  The data passed by the event caller. Unused in this case.
+*/
 void StatusAkaMain::configButtonEventHandler(__attribute__((unused)) lv_event_t* event)
 {
 	screenSwitchRequired = true;
 	desiredScreen = Screens::ConfigPidControlPart1;
 }
 
+/**
+ * @brief         Event handler function that is invoked when the "On/Off" button is pressed.
+ *
+ * @param  Event  The data passed by the event caller. Unused in this case.
+*/
 void StatusAkaMain::onOffButtonEventHandler(__attribute__((unused)) lv_event_t* event)
 {
 	currentOnOffButtonSwitchedOffState = lv_obj_has_state(onOffButton, LV_STATE_CHECKED);
@@ -390,16 +479,33 @@ void StatusAkaMain::onOffButtonEventHandler(__attribute__((unused)) lv_event_t* 
 	}
 }
 
+/**
+ * @brief         Event handler function that is invoked when the "Increment Target Temperature" button is pressed.
+ *
+ * @param  Event  The data passed by the event caller. Unused in this case.
+*/
 void StatusAkaMain::targetTemperatureDecrementButtonEventHandler(__attribute__((unused)) lv_event_t* event)
 {
 	targetTemperatureChangeDesiredByUser -= 0.5;
 }
 
+/**
+ * @brief         Event handler function that is invoked when the "Decrement Target Temperature" button is pressed.
+ *
+ * @param  Event  The data passed by the event caller. Unused in this case.
+*/
 void StatusAkaMain::targetTemperatureIncrementButtonEventHandler(__attribute__((unused)) lv_event_t* event)
 {
 	targetTemperatureChangeDesiredByUser += 0.5;
 }
 
+/**
+ * @brief                     Sets the message that is displayed in the Status bar, or clears current message if there are no problems.
+ *
+ * @param  NewErrorCondition  The error condition that needs to be displayed.
+ *
+ * @returns                   True if the message was changed. False otherwise.
+*/
 bool StatusAkaMain::changeErrorMessage(uint8_t NewErrorCondition)
 {
 	switch (NewErrorCondition)
@@ -439,6 +545,11 @@ bool StatusAkaMain::changeErrorMessage(uint8_t NewErrorCondition)
 	}
 }
 
+/**
+ * @brief  Used to instruct given functions to use their debug code.
+ *
+ * @note   Uncomment the booleans that represent the functions you want to debug.
+*/
 void StatusAkaMain::enableDebugTriggers()
 {
 //	debug_Update = true;

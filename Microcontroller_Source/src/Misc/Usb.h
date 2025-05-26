@@ -13,6 +13,9 @@
 
 #include <cstdint>
 
+/**
+ * @brief  Contains the logic for the USB Manager.
+*/
 class Usb
 {
 public:

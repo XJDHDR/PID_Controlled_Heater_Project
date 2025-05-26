@@ -48,6 +48,9 @@ float FanControl::queuedSlowdownFanDutyCycle = 0.0;
 FanControl::FanStates FanControl::currentState = SwitchedOff;
 
 
+/**
+ * @brief  Initialises the Fan Controller class.
+*/
 void FanControl::Init()
 {
 	enableDebugTriggers();
@@ -62,6 +65,11 @@ void FanControl::Init()
 	attachInterrupt(digitalPinToInterrupt(FAN_SPEED_SENSE_PIN), fanSpeedPulseInterruptHandler, RISING);
 }
 
+/**
+ * @brief   Gets data regarding the fan's state.
+ *
+ * @return  Struct containing the fan data.
+*/
 FanControl::FanRpmData FanControl::GetFanRpm()
 {
 	FanRpmData fanRpmData{};
@@ -111,11 +119,21 @@ FanControl::FanRpmData FanControl::GetFanRpm()
 	return fanRpmData;
 }
 
+/**
+ * @brief   Gets the duty cycle currently set for the fan.
+ *
+ * @return  The duty cycle as a percentage.
+*/
 float FanControl::GetFanCurrentDutyCycle()
 {
 	return currentlySetFanDutyCycle;
 }
 
+/**
+ * @brief             Checks whether the fan's duty cycle needs to be changed, and how the change should be handled.
+ *
+ * @param  InputData  The new duty cycle as a percentage between 0.0 and 100.0
+*/
 void FanControl::SetFanDutyCycle(const float NewDutyCyclePercent)
 {
 	if ((currentState == SwitchedOff) && (NewDutyCyclePercent < 0.1))
@@ -183,6 +201,9 @@ void FanControl::SetFanDutyCycle(const float NewDutyCyclePercent)
 	queueFanSpeedReduction(newDutyCycleMinSpeedCorrection);
 }
 
+/**
+ * @brief  Checks if it is time to slow down the fan, if a slowdown is queued.
+*/
 void FanControl::UpdateSlowdownState()
 {
 	if (!isSlowdownQueued)
@@ -212,6 +233,11 @@ void FanControl::UpdateSlowdownState()
 	isSlowdownQueued = false;
 }
 
+/**
+ * @brief                       Change the fan's duty cycle.
+ *
+ * @param  NewDutyCyclePercent  The new duty cycle as a percentage between 0.0 and 100.0
+*/
 void FanControl::changeFanDutyCycle(const float NewDutyCyclePercent)
 {
 	const float newDutyCyclePercent = (currentState == StartingUp) ?
@@ -224,11 +250,19 @@ void FanControl::changeFanDutyCycle(const float NewDutyCyclePercent)
 	currentlySetFanDutyCycle = NewDutyCyclePercent;
 }
 
+/**
+ * @brief  Interrupt handler function that is triggered when a rising edge occurs on the fan's speed sense pin.'
+*/
 void IRAM_ATTR FanControl::fanSpeedPulseInterruptHandler()
 {
 	speedSensePinPulseCountSinceLastCheck++;
 }
 
+/**
+ * @brief                       Queues a reduction in the fan's speed.
+ *
+ * @param  NewDutyCyclePercent  The new duty cycle as a percentage between 0.0 and 100.0
+*/
 void FanControl::queueFanSpeedReduction(const float NewDutyCyclePercent)
 {
 	isSlowdownQueued = true;
@@ -243,6 +277,9 @@ void FanControl::queueFanSpeedReduction(const float NewDutyCyclePercent)
 	millisValueAtSlowDownDelayTimerStart = millis();
 }
 
+/**
+ * @brief  Switch the fan off.
+*/
 void FanControl::switchOffFan()
 {
 	analogWrite(FAN_PWM_SPEED_CONTROL_PIN, 0);
@@ -253,6 +290,11 @@ void FanControl::switchOffFan()
 	queuedSlowdownFanDutyCycle = 0.0;
 }
 
+/**
+ * @brief  Used to instruct given functions to use their debug code.
+ *
+ * @note   Uncomment the booleans that represent the functions you want to debug.
+*/
 void FanControl::enableDebugTriggers()
 {
 //	debug_GetFanRpm = true;

@@ -60,10 +60,10 @@ float PIDController::outputMaxValue;
 
 
 /**
- * @brief  Initialises the SerialHandler class.
+ * @brief             Initialises the PID Controller class.
  *
- * @param  InputData:  description
- */
+ * @param  InputData  A struct containing the PID Controller's settings.
+*/
 void PIDController::Init(PIDControllerInitData InputData)
 {
 	enableDebugTriggers();
@@ -83,6 +83,9 @@ void PIDController::Init(PIDControllerInitData InputData)
 	previousError = currentTemperatureSetPointDegCent - currentTemperatureReadingDegCent;
 }
 
+/**
+ * @brief  Updates the internal state of the PID Controller.
+*/
 void PIDController::Update()
 {
 	if (updateLoopEarlyReturnChecks())
@@ -120,18 +123,21 @@ void PIDController::Update()
 	newLoopHasRun = true;
 }
 
+/**
+ * @brief  Tells the PID Controller that there was a fault in the temperature measurement class.
+*/
 void PIDController::ActivateTemperatureLockout()
 {
 	isTemperatureErrorLockoutActive = true;
 }
 
 /**
- * @brief  Initialises the SerialHandler class.
+ * @brief                       Increase or decrease the temperature set point.
  *
- * @param  InputData:  description
+ * @param  ChangeAmountDegCent  How much the set point should be changed.
  *
- * @return description
- */
+ * @return                      The new temperature set point.
+*/
 float PIDController::ChangeTemperatureSetPoint(float ChangeAmountDegCent)
 {
 	const float newTemperatureSetPointDegCent = currentTemperatureSetPointDegCent + ChangeAmountDegCent;
@@ -151,16 +157,31 @@ float PIDController::ChangeTemperatureSetPoint(float ChangeAmountDegCent)
 	return currentTemperatureSetPointDegCent;
 }
 
+/**
+ * @brief   Gets the duty cycle currently calculated by the PID Controller.
+ *
+ * @return  The current duty cycle as a percentage.
+*/
 float PIDController::GetCurrentDutyCyclePercent()
 {
 	return currentDutyCyclePercent;
 }
 
+/**
+ * @brief   Gets the temperature set point the PID Controller is currently using.
+ *
+ * @return  The current set point in °C.
+*/
 float PIDController::GetTemperatureSetPoint()
 {
 	return currentTemperatureSetPointDegCent;
 }
 
+/**
+ * @brief   Checks if the PID Controller has calculated a new duty cycle value since the last call to this function.
+ *
+ * @return  True if a new calculation has occurred. False otherwise.
+*/
 bool PIDController::HasNewLoopRunSinceLastCheck()
 {
 	if (newLoopHasRun)
@@ -172,11 +193,21 @@ bool PIDController::HasNewLoopRunSinceLastCheck()
 	return false;
 }
 
+/**
+ * @brief   Checks if the PID Controller's loop is currently active.
+ *
+ * @return  True if the loop is active. False if it is paused.
+*/
 bool PIDController::IsLoopActive()
 {
 	return (isControlLoopEnabled && !isTemperatureErrorLockoutActive);
 }
 
+/**
+ * @brief                      Provides the Controller with a new temperature reading.
+ *
+ * @param  CurrentTemperature  The new temperature reading in °C.
+*/
 void PIDController::SetCurrentTemperature(float CurrentTemperature)
 {
 	isTemperatureErrorLockoutActive = false;
@@ -185,6 +216,11 @@ void PIDController::SetCurrentTemperature(float CurrentTemperature)
 	millisValueAtLastTempReading = millis();
 }
 
+/**
+ * @brief                  Tells the Controller whether or not to pause the control loop.
+ *
+ * @param  ShouldActivate  True if the loop should be active. False if it should be paused.
+*/
 void PIDController::SetControlLoopIsEnabled(bool ShouldActivate)
 {
 	if (ShouldActivate == isControlLoopEnabled)
@@ -202,6 +238,11 @@ void PIDController::SetControlLoopIsEnabled(bool ShouldActivate)
 	isControlLoopEnabled = ShouldActivate;
 }
 
+/**
+ * @brief                        Used to provide the Controller with changes to any of its floating point settings.
+ *
+ * @param  ChangedFloatSettings  A Vector containing the changed float settings.
+*/
 void PIDController::ChangeFloatSettings(std::vector<PIDFloatDataPacket>* ChangedFloatSettings)
 {
 	for (PIDFloatDataPacket packet : *ChangedFloatSettings)
@@ -269,6 +310,11 @@ void PIDController::ChangeFloatSettings(std::vector<PIDFloatDataPacket>* Changed
 	}
 }
 
+/**
+ * @brief                      Used to provide the Controller with changes to any of its integer settings.
+ *
+ * @param  ChangedIntSettings  A Vector containing the changed int settings.
+*/
 void PIDController::ChangeIntSettings(std::vector<PIDIntDataPacket>* ChangedIntSettings)
 {
 	for (PIDIntDataPacket packet : *ChangedIntSettings)
@@ -313,6 +359,11 @@ void PIDController::ChangeIntSettings(std::vector<PIDIntDataPacket>* ChangedIntS
 	}
 }
 
+/**
+ * @brief    Check if there is a reason the Controller should not do an update (e.g. paused, not enough time elapsed, etc.).
+ *
+ * @returns  True if the class is not ready for an updated calculation for any reason. False otherwise.
+*/
 bool PIDController::updateLoopEarlyReturnChecks()
 {
 	if (isTemperatureErrorLockoutActive)
@@ -353,6 +404,11 @@ bool PIDController::updateLoopEarlyReturnChecks()
 	return false;
 }
 
+/**
+ * @brief    Performs the PID calculations.
+ *
+ * @returns  A struct containing the calculated Proportional and Derivative terms.
+*/
 PIDController::pidCalculations PIDController::doPIDCalculations()
 {
 	pidCalculations results = {};
@@ -376,6 +432,13 @@ PIDController::pidCalculations PIDController::doPIDCalculations()
 	return results;
 }
 
+/**
+ * @brief         Calculate the Proportional term.
+ *
+ * @param  Error  The calculated error value.
+ *
+ * @return        The Proportional term that was calculated.
+*/
 float PIDController::calculateProportionalTerm(float Error)
 {
 	if (proportionalGain < 0.0001)
@@ -395,6 +458,11 @@ float PIDController::calculateProportionalTerm(float Error)
 	return proportionalTerm;
 }
 
+/**
+ * @brief         Calculate the Integral accumulation.
+ *
+ * @param  Error  The calculated error value.
+*/
 void PIDController::calculateIntegralAccumulation(const float Error)
 {
 	if (integralGain < 0.0001)
@@ -421,6 +489,13 @@ void PIDController::calculateIntegralAccumulation(const float Error)
 	}
 }
 
+/**
+ * @brief         Calculate the Derivative term.
+ *
+ * @param  Error  The calculated error value.
+ *
+ * @return        The Derivative term that was calculated.
+*/
 float PIDController::calculateDerivativeTerm(float Error)
 {
 	if (derivativeGain < 0.0001)
@@ -460,6 +535,12 @@ void PIDController::convertLoopTimeStepMsToMinutes()
 	loopTimeStepMinutes = static_cast<float>(loopTimeStepMs) / 1000 / 60;
 }
 
+/**
+ * @brief                Create graph data and print it to the serial port for the Arduino IDE Serial Plotter.
+ *
+ * @param  Calculations  The calculated Proportional and Derivative terms.
+ * @param  Output        The calculated Output value.
+*/
 void PIDController::outputGraph(pidCalculations Calculations, float Output)
 {
 	if (!debug_outputGraph)
@@ -486,6 +567,11 @@ void PIDController::outputGraph(pidCalculations Calculations, float Output)
 	SerialHandler::SafeWriteLn(graphingOutputMsg, true);
 }
 
+/**
+ * @brief  Used to instruct given functions to use their debug code.
+ *
+ * @note   Uncomment the booleans that represent the functions you want to debug.
+*/
 void PIDController::enableDebugTriggers()
 {
 //	debug_Update = true;

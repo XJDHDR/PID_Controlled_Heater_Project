@@ -16,6 +16,9 @@
 
 #include <LovyanGFX.hpp>
 
+/**
+ * @brief  Contains the variables LovyanGFX needs to communicate with the display's IC.
+*/
 class LovyanGfxConfig : public lgfx::LGFX_Device
 {
 	lgfx::Bus_SPI spiInterface;

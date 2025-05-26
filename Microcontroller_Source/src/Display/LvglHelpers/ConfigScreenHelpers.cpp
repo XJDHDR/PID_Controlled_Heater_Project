@@ -22,6 +22,16 @@ bool ConfigScreenHelpers::debug_decrementSpinboxButtonPressedEventHandler = fals
 bool ConfigScreenHelpers::debug_incrementSpinboxButtonPressedEventHandler = false;
 
 
+/**
+ * @brief                  Create a row in the Config screen with a SpinBox and description.
+ *
+ * @param  ParentWidget    The widget this row will be parented to.
+ * @param  RowDescription  The description for the row.
+ * @param  RowPos          The row in the parent's grid that this row will occupy.
+ * @param  RangeMin        The SpinBox's minimum value.
+ * @param  RangeMax        The SpinBox's maximum value.
+ * @param  SpinboxData     A pointer to the struct that will hold the SpinBox's data.
+*/
 void ConfigScreenHelpers::CreateSettingRow(
 		lv_obj_t* ParentWidget, const char* RowDescription, const int32_t RowPos, const int32_t RangeMin, const int32_t RangeMax, SpinboxData* SpinboxData
 )
@@ -56,18 +66,36 @@ void ConfigScreenHelpers::CreateSettingRow(
 	);
 }
 
+/**
+ * @brief         Event handler function that is triggered when a SpinBox's decrement value button is pressed.
+ *
+ * @param  Event  The event that triggered this handler.
+*/
 void ConfigScreenHelpers::decrementSpinboxButtonPressedEventHandler(lv_event_t* Event)
 {
 	SpinboxData* spinboxData = static_cast<SpinboxData*>(lv_event_get_user_data(Event));
 	changeSpinboxValue(spinboxData, false, debug_decrementSpinboxButtonPressedEventHandler, "decremented");
 }
 
+/**
+ * @brief  Event handler function that is triggered when a SpinBox's increment value button is pressed.
+ *
+ * @param  Event:  The event that triggered this handler.
+*/
 void ConfigScreenHelpers::incrementSpinboxButtonPressedEventHandler(lv_event_t* Event)
 {
 	SpinboxData* spinboxData = static_cast<SpinboxData*>(lv_event_get_user_data(Event));
 	changeSpinboxValue(spinboxData, true, debug_incrementSpinboxButtonPressedEventHandler, "incremented");
 }
 
+/**
+ * @brief                             Changes the SpinBox's internally stored value, and propagates that value to the SpinBox's struct.
+ *
+ * @param  SpinboxData                The struct which contains the target SpinBox's data.
+ * @param  ShouldIncrement            Is the SpinBox being incremented or decremented?
+ * @param  ShouldDebug                Is the debug code for this SpinBox active?
+ * @param  SpinboxChangeTypeDebugMsg  String indicating if the SpinBox is being incremented or decremented (for debug message).
+*/
 void ConfigScreenHelpers::changeSpinboxValue(SpinboxData* SpinboxData, const bool ShouldIncrement, const bool ShouldDebug, const char* SpinboxChangeTypeDebugMsg)
 {
 	if (!SpinboxData)
@@ -95,6 +123,11 @@ void ConfigScreenHelpers::changeSpinboxValue(SpinboxData* SpinboxData, const boo
 	}
 }
 
+/**
+ * @brief  Used to instruct given functions to use their debug code.
+ *
+ * @note   Uncomment the booleans that represent the functions you want to debug.
+*/
 void ConfigScreenHelpers::enableDebugTriggers()
 {
 //	debug_decrementSpinboxButtonPressedEventHandler = true;

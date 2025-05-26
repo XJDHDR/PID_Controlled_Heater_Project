@@ -18,6 +18,10 @@
 #include "Display/Screens/AllScreens.h"
 #include "Display/Screens/ConfigPIDControlPart1.h"
 
+/**
+ * @brief  Contains the logic for interfacing with the display.
+ * This includes managing the screen currently being displayed, backlight, touch and LVGL.
+*/
 class Display
 {
 public:

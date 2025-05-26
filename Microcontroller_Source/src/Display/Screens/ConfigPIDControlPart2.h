@@ -20,6 +20,9 @@
 #include "Display/Screens/AllScreens.h"
 #include "InitDataTypes/PIDControllerData.h"
 
+/**
+ * @brief  Contains the logic for the screen which contains the PID Derivative Control and Output settings.
+*/
 class ConfigPIDControlPart2
 {
 public:

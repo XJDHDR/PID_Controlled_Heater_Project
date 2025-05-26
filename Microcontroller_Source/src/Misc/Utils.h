@@ -14,6 +14,9 @@
 #include <cstdint>
 #include <string>
 
+/**
+ * @brief  Contains a few utility functions.
+*/
 class Utils
 {
 public:

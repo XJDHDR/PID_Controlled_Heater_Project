@@ -45,6 +45,14 @@ int16_t Touch::screenHeight = 0;
 int16_t Touch::screenWidth = 0;
 
 
+/**
+ * @brief                Initialises the Touchscreen class.
+ *
+ * @param  ScreenWidth   The display's width.
+ * @param  ScreenHeight  The display's height.
+ *
+ * @return               True if the initialisation was successful. False otherwise.
+*/
 bool Touch::Init(int16_t ScreenWidth, int16_t ScreenHeight)
 {
 	enableDebugTriggers();
@@ -74,6 +82,11 @@ bool Touch::Init(int16_t ScreenWidth, int16_t ScreenHeight)
 	return true;
 }
 
+/**
+ * @brief   Checks if the screen has been touched since the last time this function was called.
+ *
+ * @return  True if the screen was touched. False otherwise.
+*/
 bool Touch::HasScreenBeenTouched()
 {
 	const I2CData touchPressureZData = readData(TOUCH_REG_COORD_Z);
@@ -104,9 +117,15 @@ bool Touch::HasScreenBeenTouched()
 		std::string screenWasTouchedMessage = Utils::StringFormat("Screen was touched with Z value of: %i", touchPressureZData.Data);
 		SerialHandler::SafeWriteLn(screenWasTouchedMessage, true);
 	}
+
 	return true;
 }
 
+/**
+ * @brief   Gets data for the last touch event.
+ *
+ * @return  Struct containing the coordinates of the last touch event.
+*/
 Touch::TouchPoint Touch::GetLastTouchPoint()
 {
 	TouchPoint result{};
@@ -147,6 +166,13 @@ Touch::TouchPoint Touch::GetLastTouchPoint()
 	return result;
 }
 
+/**
+ * @brief               Communicates with the touch IC and reads data from it.
+ *
+ * @param  CommandByte  The register to read data from.
+ *
+ * @return              Data concerning the I2C communication.
+*/
 Touch::I2CData Touch::readData(uint8_t CommandByte)
 {
 	I2CData i2CData{};
@@ -179,6 +205,11 @@ Touch::I2CData Touch::readData(uint8_t CommandByte)
 	return i2CData;
 }
 
+/**
+ * @brief   Determines if the last touch event was invalid.
+ *
+ * @return  True if the touch event was invalid. False otherwise.
+*/
 bool Touch::isTouchDataInvalid()
 {
 	// Sometimes, the screen provides some invalid touch registrations that have coordinates of (4095, 4095).
@@ -205,6 +236,13 @@ bool Touch::isTouchDataInvalid()
 	return false;
 }
 
+/**
+ * @brief                   Determines if the specified touch coordinate is out of bounds.
+ *
+ * @param  touchCoordinate  The touch data.
+ *
+ * @return                  True if the touch is out of bounds. False otherwise.
+*/
 bool Touch::isTouchDataOutOfBounds(uint16_t touchCoordinate)
 {
 	if ((touchCoordinate > 4000) || (touchCoordinate < 150))
@@ -215,6 +253,18 @@ bool Touch::isTouchDataOutOfBounds(uint16_t touchCoordinate)
 	return false;
 }
 
+/**
+ * @brief                   Translates a given touch coordinate into the equivalent screen coordinate.
+ *
+ * @param  TouchCoordinate  The touch coordinate.
+ * @param  TouchMin         The minimum value for the touch coordinate.
+ * @param  TouchMax         The maximum value for the touch coordinate.
+ * @param  ScreenMin        The minimum screen coordinate value.
+ * @param  ScreenMax        The maximum screen coordinate value.
+ * @param  IsFlipped        Whether or not this coordinate is inverted.
+ *
+ * @return                  The translated screen coordinate.
+*/
 uint16_t Touch::translateFromTouchToScreenCoordinate(
 	const uint16_t TouchCoordinate, const uint16_t TouchMin, const uint16_t TouchMax,
 	const uint16_t ScreenMin, const uint16_t ScreenMax, const bool IsFlipped
@@ -241,6 +291,11 @@ uint16_t Touch::translateFromTouchToScreenCoordinate(
 	return static_cast<uint16_t>(screenCoordinate);
 }
 
+/**
+ * @brief  Used to instruct given functions to use their debug code.
+ *
+ * @note   Uncomment the booleans that represent the functions you want to debug.
+*/
 void Touch::enableDebugTriggers()
 {
 //	debug_Init = true;

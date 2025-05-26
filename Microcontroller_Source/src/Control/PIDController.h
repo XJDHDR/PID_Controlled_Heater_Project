@@ -18,6 +18,9 @@
 
 #include "InitDataTypes/PIDControllerData.h"
 
+/**
+ * @brief  Contains the logic for the PID Controller.
+*/
 class PIDController
 {
 public:

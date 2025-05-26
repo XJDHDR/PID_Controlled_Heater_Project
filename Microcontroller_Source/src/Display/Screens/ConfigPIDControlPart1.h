@@ -20,6 +20,9 @@
 #include "Display/Screens/AllScreens.h"
 #include "InitDataTypes/PIDControllerData.h"
 
+/**
+ * @brief  Contains the logic for the screen which contains the PID Time Step, Proportional and Integral Control settings.
+*/
 class ConfigPIDControlPart1
 {
 public:

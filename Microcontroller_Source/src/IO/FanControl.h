@@ -13,9 +13,15 @@
 
 #include <cstdint>
 
+/**
+ * @brief  Contains the logic for the Fan Controller.
+*/
 class FanControl
 {
 public:
+	/**
+	 * @brief  Contains data about whether the fan is on, whether the fan was spinning and the measured RPM.
+	*/
 	struct FanRpmData
 	{
 		bool IsFanSwitchedOn;

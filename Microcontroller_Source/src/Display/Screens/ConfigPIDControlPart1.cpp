@@ -39,6 +39,13 @@ ConfigScreenHelpers::FloatSpinboxData ConfigPIDControlPart1::integralWindupLimit
 lv_obj_t* ConfigPIDControlPart1::rootScreenContainer;
 
 
+/**
+ * @brief                        Initialises the Config screen class.
+ *
+ * @param  TargetScreen          The display that this screen will be parented to.
+ * @param  ButtonLabelTextStyle  The style that will be applied to the labels of large buttons.
+ * @param  ConfigData            A struct containing the PID Controller's settings.
+*/
 void ConfigPIDControlPart1::Init(lv_obj_t* TargetScreen, lv_style_t* ButtonLabelTextStyle, PIDControllerInitData ConfigData)
 {
 	enableDebugTriggers();
@@ -69,6 +76,11 @@ void ConfigPIDControlPart1::Init(lv_obj_t* TargetScreen, lv_style_t* ButtonLabel
 	navigationButtonsBuilder(ButtonLabelTextStyle);
 }
 
+/**
+ * @brief    Used to figure out if the user has requested a switch to a different screen.
+ *
+ * @returns  The screen that needs to be switched to, or Invalid if no switch is required.
+*/
 Screens ConfigPIDControlPart1::IsScreenSwitchRequired()
 {
 	if (!screenSwitchRequired)
@@ -79,6 +91,9 @@ Screens ConfigPIDControlPart1::IsScreenSwitchRequired()
 	return desiredScreen;
 }
 
+/**
+ * @brief    Hides the screen from view.
+*/
 void ConfigPIDControlPart1::Hide()
 {
 	lv_obj_add_flag(rootScreenContainer, LV_OBJ_FLAG_HIDDEN);
@@ -86,6 +101,9 @@ void ConfigPIDControlPart1::Hide()
 	desiredScreen = Screens::Invalid;
 }
 
+/**
+ * @brief    Unhides the screen.
+*/
 void ConfigPIDControlPart1::Show()
 {
 	lv_obj_remove_flag(rootScreenContainer, LV_OBJ_FLAG_HIDDEN);
@@ -93,6 +111,11 @@ void ConfigPIDControlPart1::Show()
 	desiredScreen = Screens::ConfigPidControlPart1;
 }
 
+/**
+ * @brief                        Fetches any float settings that have been changed since the last time this function was invoked.
+ *
+ * @param  ChangedFloatSettings  A Vector that the changed float settings will be added to.
+*/
 void ConfigPIDControlPart1::GetAllChangedFloatSettings(std::vector<PIDFloatDataPacket>* ChangedFloatSettings)
 {
 	if (proportionalGain.HasValueBeenChangedSinceLastCheck)
@@ -117,6 +140,11 @@ void ConfigPIDControlPart1::GetAllChangedFloatSettings(std::vector<PIDFloatDataP
 	}
 }
 
+/**
+ * @brief                        Fetches any integer settings that have been changed since the last time this function was invoked.
+ *
+ * @param  ChangedFloatSettings  A Vector that the changed integer settings will be added to.
+*/
 void ConfigPIDControlPart1::GetAllChangedIntSettings(std::vector<PIDIntDataPacket>* ChangedIntSettings)
 {
 	if (loopTimeStep.HasValueBeenChangedSinceLastCheck)
@@ -126,6 +154,11 @@ void ConfigPIDControlPart1::GetAllChangedIntSettings(std::vector<PIDIntDataPacke
 	}
 }
 
+/**
+ * @brief                         Creates the widgets in the config screen.
+ *
+ * @param  WidgetsContainerWidth  The width that the widget container needs to be.
+*/
 void ConfigPIDControlPart1::settingsConfigBuilder(const int32_t WidgetsContainerWidth)
 {
 	lv_obj_t* settingsWidgetsContainer = LvglHelpers::CreateWidgetContainer(
@@ -156,6 +189,11 @@ void ConfigPIDControlPart1::settingsConfigBuilder(const int32_t WidgetsContainer
 	);
 }
 
+/**
+ * @brief                        Creates the buttons that are used for navigation.
+ *
+ * @param  ButtonLabelTextStyle  The style that will be applied to the labels of large buttons.
+*/
 void ConfigPIDControlPart1::navigationButtonsBuilder(lv_style_t* ButtonLabelTextStyle)
 {
 	lv_obj_t* toPreviousConfigScreenButton = lv_button_create(rootScreenContainer);
@@ -195,6 +233,11 @@ void ConfigPIDControlPart1::navigationButtonsBuilder(lv_style_t* ButtonLabelText
 	lv_obj_align(toNextConfigScreenButtonText, LV_ALIGN_CENTER, 0, 0);
 }
 
+/**
+ * @brief         Event handler function that is invoked when the "previous screen" button is pressed.
+ *
+ * @param  Event  The data passed by the event caller. Unused in this case.
+*/
 void ConfigPIDControlPart1::toPreviousConfigScreenButtonPressedEventHandler(__attribute__((unused)) lv_event_t* Event)
 {
 	screenSwitchRequired = true;
@@ -202,6 +245,11 @@ void ConfigPIDControlPart1::toPreviousConfigScreenButtonPressedEventHandler(__at
 	resetAllCursorPositions();
 }
 
+/**
+ * @brief         Event handler function that is invoked when the "return to main screen" button is pressed.
+ *
+ * @param  Event  The data passed by the event caller. Unused in this case.
+*/
 void ConfigPIDControlPart1::returnToMainScreenButtonPressedEventHandler(__attribute__((unused)) lv_event_t* Event)
 {
 	screenSwitchRequired = true;
@@ -209,6 +257,11 @@ void ConfigPIDControlPart1::returnToMainScreenButtonPressedEventHandler(__attrib
 	resetAllCursorPositions();
 }
 
+/**
+ * @brief         Event handler function that is invoked when the "next screen" button is pressed.
+ *
+ * @param  Event  The data passed by the event caller. Unused in this case.
+*/
 void ConfigPIDControlPart1::toNextConfigScreenButtonPressedEventHandler(__attribute__((unused)) lv_event_t* Event)
 {
 	screenSwitchRequired = true;
@@ -216,6 +269,9 @@ void ConfigPIDControlPart1::toNextConfigScreenButtonPressedEventHandler(__attrib
 	resetAllCursorPositions();
 }
 
+/**
+ * @brief  Resets the cursor positions of all SpinBoxes.
+*/
 void ConfigPIDControlPart1::resetAllCursorPositions()
 {
 	lv_spinbox_set_cursor_pos(loopTimeStep.Spinbox, 0);
@@ -225,6 +281,11 @@ void ConfigPIDControlPart1::resetAllCursorPositions()
 	lv_spinbox_set_cursor_pos(integralWindupLimitMin.Spinbox, 0);
 }
 
+/**
+ * @brief  Used to instruct given functions to use their debug code.
+ *
+ * @note   Uncomment the booleans that represent the functions you want to debug.
+*/
 void ConfigPIDControlPart1::enableDebugTriggers()
 {
 }
