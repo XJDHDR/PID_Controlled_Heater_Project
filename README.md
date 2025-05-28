@@ -5,7 +5,7 @@ This repository holds the files for a PID Controlled Heater project that I creat
 For this project, I was provided a 230V 1.5KW heating element then tasked with building a heater around it. I had to create a heater that heat the air up to and maintain it at a user defined temperature. I accomplished this by creating a PCB that used an ESP32-C3 microcontroller to infer temperature from the voltage drop across a thermistor and control the power level of the heating element and a fan.
 
 ## Microcontroller source code
-The "Microcontroller_Source" folder contains the microcontroller's firmware. It was written in C++ and targets the Arduino API. PLatformIO is used to build and flash the firmware onto the microcontroller. Please see (the PlatformIO documentation)[https://docs.platformio.org/en/latest/integration/ide/index.html] for instructions to install and use it in your IDE.
+The "Microcontroller_Source" folder contains the microcontroller's firmware. It was written in C++ and targets the Arduino API. PLatformIO is used to build and flash the firmware onto the microcontroller. Please see [the PlatformIO documentation](https://docs.platformio.org/en/latest/integration/ide/index.html) for instructions to install and use it in your IDE.
 
 ## PCB files
 The "PCB_Files" folder contains files related to the PCBs I created for this project. 
