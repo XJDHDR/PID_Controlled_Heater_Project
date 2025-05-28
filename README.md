@@ -13,7 +13,7 @@ The "PCB_Files" folder contains files related to the PCBs I created for this pro
 ## Application notes
 Physical modifications are required to the PCB for the Olimex display that was used in the project.
 
-![Display jumpers](https://raw.githubusercontent.com/XJDHDR/PID_Controlled_Heater_Project/refs/heads/main/Olimex_Display_jumpers.png)
+<img alt="Display jumpers" src="https://raw.githubusercontent.com/XJDHDR/PID_Controlled_Heater_Project/refs/heads/main/Olimex_Display_jumpers.png" width="210" height="323">
 
 - To allow the backlight to be controlled, **SJ2** needs to be modified. The track between pads 1 and 2 needs to be cut, then solder needs to be added to connect pads 2 and 3. Without this change, the backlight will be constantly switched on.
 - To give the touch IC the ability to signal that a touch event has occurred, **SJ3** needs to be modified. Solder needs to be added to connect the two pads. Without this change, the microcontroller has to poll the touch IC to figure out if one has occurred.
